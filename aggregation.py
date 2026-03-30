@@ -3,13 +3,13 @@ aggregation.py — Token aggregation strategy and feature extraction
                (student-implemented).
 
 Converts per-token, per-layer hidden states from the extraction loop in
-``solution.ipynb`` into flat feature vectors for the probe classifier.
+``solution.py`` into flat feature vectors for the probe classifier.
 
 Two stages can be customised independently:
 
   1. ``aggregate`` — select layers and token positions, pool into a vector.
   2. ``extract_geometric_features`` — optional hand-crafted features
-     (enabled by setting ``USE_GEOMETRIC = True`` in ``solution.ipynb``).
+     (enabled by setting ``USE_GEOMETRIC = True`` in ``solution.py``).
 
 Both stages are combined by ``aggregation_and_feature_extraction``, the
 single entry point called from the notebook.
