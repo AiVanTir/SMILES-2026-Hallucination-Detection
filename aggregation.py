@@ -24,21 +24,14 @@ def aggregate(
     hidden_states: torch.Tensor,
     attention_mask: torch.Tensor,
 ) -> torch.Tensor:
-    # Last real token position.
+    """Convert per-token hidden states into a single feature vector."""
+
+    layer = hidden_states[-3]
+
     real_positions = attention_mask.nonzero(as_tuple=False)
     last_pos = int(real_positions[-1].item())
 
-    # Final and penultimate transformer layers.
-    final_layer = hidden_states[-1]
-    penultimate_layer = hidden_states[-2]
-
-    final_feature = final_layer[last_pos]
-    penultimate_feature = penultimate_layer[last_pos]
-
-    # Weighted layer fusion. The final layer remains dominant because it was
-    # stronger in the baseline experiment, while the penultimate layer may add
-    # complementary semantic information.
-    feature = 0.70 * final_feature + 0.30 * penultimate_feature
+    feature = layer[last_pos]
 
     return feature
 

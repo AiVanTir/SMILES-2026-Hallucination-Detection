@@ -79,6 +79,10 @@ class HallucinationProbe(nn.Module):
         Returns:
             ``self`` (for method chaining).
         """
+
+        np.random.seed(42)
+        torch.manual_seed(42)
+
         X_scaled = self._scaler.fit_transform(X)
 
         self._build_network(X_scaled.shape[1])
