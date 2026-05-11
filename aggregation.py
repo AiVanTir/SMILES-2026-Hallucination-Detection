@@ -38,7 +38,7 @@ def aggregate(
     # Weighted layer fusion. The final layer remains dominant because it was
     # stronger in the baseline experiment, while the penultimate layer may add
     # complementary semantic information.
-    feature = 0.75 * final_feature + 0.25 * penultimate_feature
+    feature = 0.70 * final_feature + 0.30 * penultimate_feature
 
     return feature
 
