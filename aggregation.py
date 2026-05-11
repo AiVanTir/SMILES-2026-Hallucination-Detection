@@ -26,12 +26,16 @@ def aggregate(
 ) -> torch.Tensor:
     """Convert per-token hidden states into a single feature vector."""
 
-    layer = hidden_states[-3]
-
     real_positions = attention_mask.nonzero(as_tuple=False)
     last_pos = int(real_positions[-1].item())
 
-    feature = layer[last_pos]
+    h3 = hidden_states[-3][last_pos]
+    h1 = hidden_states[-1][last_pos]
+
+    raw_feature = 0.75 * h3 + 0.25 * h1
+    norm_feature = raw_feature / (raw_feature.norm() + 1e-6)
+
+    feature = torch.cat([raw_feature, norm_feature], dim=0)
 
     return feature
 

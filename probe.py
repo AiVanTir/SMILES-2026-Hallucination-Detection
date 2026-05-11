@@ -45,6 +45,7 @@ class HallucinationProbe(nn.Module):
         self._net = nn.Sequential(
             nn.Linear(input_dim, 256),
             nn.ReLU(),
+            nn.Dropout(p=0.10),
             nn.Linear(256, 1),
         )
 
@@ -79,10 +80,8 @@ class HallucinationProbe(nn.Module):
         Returns:
             ``self`` (for method chaining).
         """
-
         np.random.seed(42)
         torch.manual_seed(42)
-
         X_scaled = self._scaler.fit_transform(X)
 
         self._build_network(X_scaled.shape[1])
@@ -137,12 +136,20 @@ class HallucinationProbe(nn.Module):
         candidates = np.unique(np.concatenate([probs, np.linspace(0.0, 1.0, 101)]))
 
         best_threshold = 0.5
+        best_accuracy = -1.0
         best_f1 = -1.0
+
         for t in candidates:
             y_pred_t = (probs >= t).astype(int)
-            score = f1_score(y_val, y_pred_t, zero_division=0)
-            if score > best_f1:
-                best_f1 = score
+
+            accuracy = float((y_pred_t == y_val.astype(int)).mean())
+            f1 = f1_score(y_val, y_pred_t, zero_division=0)
+
+            if accuracy > best_accuracy or (
+                accuracy == best_accuracy and f1 > best_f1
+            ):
+                best_accuracy = accuracy
+                best_f1 = f1
                 best_threshold = float(t)
 
         self._threshold = best_threshold
